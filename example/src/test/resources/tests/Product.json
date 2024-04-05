@@ -1,0 +1,7 @@
+{
+  "name": "test game",
+  "description": "test game description",
+  "unitPrice": 10.0,
+  "category": "RPG",
+  "platform": "PC"
+}
