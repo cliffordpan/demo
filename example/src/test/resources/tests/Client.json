@@ -1,7 +1,0 @@
-{
-  "email": "client4@hchome.me",
-  "password": "{bcrypt}$2a$10$DwMlk1CeKi.pJiKBSXhKuO87lUjm.W4YJpB1dzxtlaoywCKVYame6",
-  "enabled": true,
-  "firstName": "Client4",
-  "lastName": "Test"
-}

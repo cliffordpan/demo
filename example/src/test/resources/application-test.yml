@@ -1,6 +1,0 @@
-logging:
-  pattern:
-    console: "%-5level %d{MM-dd HH:mm:ss} %X{tenantId:----} %msg - %logger{64}%n"
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
