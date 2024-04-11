@@ -2,6 +2,7 @@ package me.hchome.example.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import me.hchome.example.dto.ErrorEntity;
+import me.hchome.example.exception.ServiceNotAvailable;
 import me.hchome.example.exception.TokenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,13 @@ public class ExceptionHandlers {
 	public ErrorEntity handleEntityNotFoundException(EntityNotFoundException exception) {
 		LOG.debug("Entity Not found", exception);
 		return createErrorEntity(exception.getMessage(), getSimpleName(exception));
+	}
+
+	@ExceptionHandler(ServiceNotAvailable.class)
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public ErrorEntity handleServiceNotAvailable(ServiceNotAvailable ex) {
+		LOG.debug("Service not available", ex);
+		return createErrorEntity(ex.getMessage(), getSimpleName(ex));
 	}
 
 	private String getSimpleName(Throwable throwable) {

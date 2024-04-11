@@ -67,7 +67,7 @@ public class WebSecurityConfig {
 		);
 		return http.securityMatcher(API_PATHS)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/{id:\\d+}").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/{id:\\d+}", "/api/server/health", "/api/server/db/reset").permitAll()
 						.anyRequest().authenticated()
 				)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
