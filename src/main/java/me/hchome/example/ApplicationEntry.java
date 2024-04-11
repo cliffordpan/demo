@@ -15,10 +15,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableJpaAuditing(auditorAwareRef = "auditingAware")
-public class AngularGameStoreApplication {
+public class ApplicationEntry {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AngularGameStoreApplication.class, args);
+		SpringApplication.run(ApplicationEntry.class, args);
 	}
 
 }

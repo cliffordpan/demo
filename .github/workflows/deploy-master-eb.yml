@@ -1,0 +1,46 @@
+name: deploy-master-to-eb
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: corretto
+          java-version: '17'
+      - name: Cache Gradle Packages
+        uses: actions/cache@v4
+        with:
+          path:
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build
+        run: ./gradlew clean bootJar -x test
+      - name: Config AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: "us-west-2"
+      - name: Upload to S3
+        run: aws s3 cp build/libs/example-boot.jar s3://eb-s3-deploy/
+      - name: Create ElasticBeanstalk Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name demo-backend \
+          --source-bundle S3Bucket="eb-s3-deploy",S3Key="example-boot.jar" \
+          --version-label "ver-${{ github.sha }}"
+      - name: Deploy New Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name demo-backend-env --version-label "ver-${{ github.sha }}"

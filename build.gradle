@@ -36,8 +36,21 @@ dependencies {
 	testImplementation 'org.testcontainers:junit-jupiter'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+}
+
+bootJar {
+	archiveClassifier = 'boot'
+	archiveFileName = "${archiveBaseName.get()}-${archiveClassifier}.${archiveExtension.get()}"
+	manifest {
+		attributes 'Start-Class': 'me.hchome.example.ApplicationEntry'
+	}
+}
+
+jar {
+	archiveClassifier = ''
+	archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
 idea {
