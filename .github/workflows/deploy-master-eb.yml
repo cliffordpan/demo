@@ -15,6 +15,8 @@ jobs:
         with:
           distribution: corretto
           java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
       - name: Cache Gradle Packages
         uses: actions/cache@v4
         with:
@@ -34,7 +36,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
           aws-region: "us-west-2"
       - name: Upload to S3
-        run: aws s3 cp build/libs/example-boot.jar s3://eb-s3-deploy/
+        run: aws s3 cp ./build/libs/example-boot.jar s3://eb-s3-deploy/
       - name: Create ElasticBeanstalk Version
         run: |
           aws elasticbeanstalk create-application-version \
