@@ -46,6 +46,9 @@ tasks.named("bootJar") {
     manifest {
         attributes 'Start-Class': 'me.hchome.example.ApplicationEntry'
     }
+    from("src/main/resources/.ebextensions") {
+        into(".ebextensions")
+    }
 }
 
 tasks.named("jar") {

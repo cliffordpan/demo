@@ -15,3 +15,6 @@ spring:
       username: sa
   sql:
     init.mode: always
+logging:
+  file:
+    path: /var/log/tomcat
