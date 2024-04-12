@@ -38,7 +38,8 @@ public class MaintenanceFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		if (availability.getReadinessState().equals(ReadinessState.REFUSING_TRAFFIC) &&
-				!"/api/server/health".equalsIgnoreCase(request.getRequestURI())) {
+				(!"/api/server/status".equalsIgnoreCase(request.getRequestURI()) ||
+						!"/api/server/health".equalsIgnoreCase(request.getRequestURI()))) {
 			this.exceptionResolver.resolveException(request, response, null, new ServiceNotAvailable());
 		} else {
 			filterChain.doFilter(request, response);
