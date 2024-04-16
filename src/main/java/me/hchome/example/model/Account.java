@@ -2,6 +2,8 @@ package me.hchome.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +23,11 @@ import java.util.Map;
 @Table(name= "accounts", uniqueConstraints = @UniqueConstraint(name = "accounts_email_uk", columnNames = "email"))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", length = 16, discriminatorType = DiscriminatorType.STRING)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+		@JsonSubTypes.Type(name = Account.CLIENT, value = Client.class),
+		@JsonSubTypes.Type(name = Account.EMPLOYEE, value = Employee.class)
+})
 public abstract class Account extends BaseDomainEntity {
 
 	public final static String CLIENT = "CLIENT";
@@ -66,7 +73,6 @@ public abstract class Account extends BaseDomainEntity {
 
 	@Column(insertable = false, updatable = false)
 	@Enumerated(EnumType.STRING)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Type type;
 
 	public String getEmail() {

@@ -28,12 +28,12 @@ public class ProductController {
 	}
 
 	@GetMapping
-	public Page<ProductBasic> list(@RequestParam(defaultValue = "") String search, @PageableDefault Pageable pageable) {
+	public Page<ProductBasic> list(@RequestParam(defaultValue = "", name = "search") String search, @PageableDefault Pageable pageable) {
 		return service.listProducts(search, pageable);
 	}
 
 	@GetMapping("/{id:\\d+}")
-	public Product get(@PathVariable long id) {
+	public Product get(@PathVariable(name = "id") long id) {
 		return service.getProduct(id);
 	}
 
@@ -45,14 +45,14 @@ public class ProductController {
 
 	@PutMapping("/{id:\\d+}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Product updateProduct(@PathVariable long id, @RequestBody @Validated Product product) {
+	public Product updateProduct(@PathVariable(name = "id") long id, @RequestBody @Validated Product product) {
 		return service.updateProduct(id, product);
 	}
 
 	@DeleteMapping("/{id:\\d+}")
 	@PreAuthorize("hasRole('ADMIN')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteProduct(@PathVariable long id) {
+	public void deleteProduct(@PathVariable(name = "id") long id) {
 		service.deleteProduct(id);
 	}
 }

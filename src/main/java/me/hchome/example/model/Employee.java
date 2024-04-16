@@ -1,6 +1,7 @@
 package me.hchome.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -20,6 +21,7 @@ import java.util.Set;
 })
 @Entity
 @DiscriminatorValue(Account.EMPLOYEE)
+@JsonTypeName(Account.EMPLOYEE)
 public class Employee extends Account {
 
 	@ElementCollection
