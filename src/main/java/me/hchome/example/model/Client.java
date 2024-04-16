@@ -1,6 +1,7 @@
 package me.hchome.example.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,7 @@ import java.util.Set;
  */
 @Entity
 @DiscriminatorValue(Account.CLIENT)
+@JsonTypeName(Account.CLIENT)
 public class Client extends Account {
 
 	@Size(max = 32)

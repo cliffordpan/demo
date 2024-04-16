@@ -39,17 +39,17 @@ public class TicketController {
 	}
 
 	@GetMapping
-	public Page<Ticket> listTickets(@RequestParam(defaultValue = "false") boolean includeClosed, Pageable pageable) {
+	public Page<Ticket> listTickets(@RequestParam(defaultValue = "false", name = "includeClosed") boolean includeClosed, Pageable pageable) {
 		return service.listTickets(includeClosed, pageable);
 	}
 
 	@GetMapping("/{id:\\d+}")
-	public Ticket getTicket(@PathVariable long id) {
+	public Ticket getTicket(@PathVariable(name = "id") long id) {
 		return service.getTicket(id);
 	}
 
 	@PutMapping("/{id:\\d+}")
-	public Ticket updateTicket(@PathVariable long id, @RequestBody @Validated Ticket ticket) {
+	public Ticket updateTicket(@PathVariable(name = "id") long id, @RequestBody @Validated Ticket ticket) {
 		return service.updateTicket(id, ticket);
 	}
 
