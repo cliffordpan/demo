@@ -1,5 +1,8 @@
 # Demo Project
 
+### Move to home lab - k8s
+Using AWS Route53 to host the zone, use a CronJob as ddns.
+
 ### Database - H2 database
 For demo purpose, this one use H2 memory database with preset
 data.

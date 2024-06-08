@@ -7,27 +7,36 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 /**
- * Clear refresh token if logout
+ * Clear refresh token if logout.
  *
  * @author Cliff Pan
  */
 class ClearRefreshTokenLogoutHandler implements LogoutHandler {
 
-	private final String cookeName;
-	private final String refreshPath;
+    /**
+     * Cookie name.
+     */
+    private final String cookeName;
+    /**
+     * Refresh path.
+     */
+    private final String refreshPath;
 
-	public ClearRefreshTokenLogoutHandler(String cookeName, String refreshPath) {
-		this.cookeName = cookeName;
-		this.refreshPath = refreshPath;
-	}
+    ClearRefreshTokenLogoutHandler(final String cookieNameInput,
+                                   final String refreshPathInput) {
+        this.cookeName = cookieNameInput;
+        this.refreshPath = refreshPathInput;
+    }
 
-	@Override
-	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-		Cookie cookie = new Cookie(cookeName, null);
-		cookie.setPath(refreshPath);
-		cookie.setMaxAge(0);
-		cookie.setSecure(request.isSecure());
-		cookie.setHttpOnly(true);
-		response.addCookie(cookie);
-	}
+    @Override
+    public void logout(final HttpServletRequest request,
+                       final HttpServletResponse response,
+                       final Authentication authentication) {
+        Cookie cookie = new Cookie(cookeName, null);
+        cookie.setPath(refreshPath);
+        cookie.setMaxAge(0);
+        cookie.setSecure(request.isSecure());
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+    }
 }
