@@ -1,12 +1,14 @@
 package me.hchome.example.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import me.hchome.example.service.DBService;
 import org.springframework.boot.availability.ApplicationAvailability;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.Callable;
 
 /**
  * @author Cliff Pan
@@ -26,22 +28,27 @@ public class HealthController {
 	}
 
 	@GetMapping("/health")
-	public String getHealth() {
-		return "Status: OK!";
+	public Callable<String> getHealth() {
+		return () -> "Status: OK!";
 	}
 
 	@GetMapping("/status")
-	public ResponseEntity<String> getStatus() {
-		String status = switch (availability.getReadinessState()) {
-			case REFUSING_TRAFFIC -> "REFUSE";
-			case ACCEPTING_TRAFFIC -> "ACCEPT";
+	public Callable<ResponseEntity<String>> getStatus() {
+		return () -> {
+			String status = switch (availability.getReadinessState()) {
+				case REFUSING_TRAFFIC -> "REFUSE";
+				case ACCEPTING_TRAFFIC -> "ACCEPT";
+			};
+			return ResponseEntity.ok(status);
 		};
-		return ResponseEntity.ok(status);
 	}
 
 	@GetMapping("/db/reset")
-	public void resetDB() {
-		dbService.executeReset();
+	public Callable<Void> resetDB() {
+		return () -> {
+			dbService.executeReset();
+			return null;
+		};
 	}
 
 }

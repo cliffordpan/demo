@@ -4,16 +4,20 @@ import jakarta.persistence.EntityNotFoundException;
 import me.hchome.example.dao.AccountRepository;
 import me.hchome.example.dao.ClientRepository;
 import me.hchome.example.dao.EmployeeRepository;
+import me.hchome.example.dto.BaseAccount;
 import me.hchome.example.model.Account;
 import me.hchome.example.model.Client;
 import me.hchome.example.model.Employee;
 import me.hchome.example.service.AccountService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author Cliff Pan
@@ -25,12 +29,19 @@ class AccountServiceImpl implements AccountService {
 
 	private final EmployeeRepository employeeRepository;
 	private final ClientRepository clientRepository;
+	private final AccountRepository<Account> accountRepository;
 	private final PasswordEncoder encoder;
 
-	public AccountServiceImpl(EmployeeRepository employeeRepository, ClientRepository clientRepository, PasswordEncoder encoder) {
+	public AccountServiceImpl(EmployeeRepository employeeRepository, ClientRepository clientRepository, @Qualifier("accountRepository") AccountRepository<Account> accountRepository, PasswordEncoder encoder) {
 		this.employeeRepository = employeeRepository;
 		this.clientRepository = clientRepository;
+		this.accountRepository = accountRepository;
 		this.encoder = encoder;
+	}
+
+	@Override
+	public List<BaseAccount> listAllBase() {
+		return accountRepository.findAllBase();
 	}
 
 	@Override

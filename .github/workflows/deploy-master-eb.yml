@@ -15,6 +15,14 @@ jobs:
         with:
           distribution: corretto
           java-version: '17'
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Login registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
       - name: Build
         uses: gradle/gradle-build-action@v3
       - name: Cache Gradle Packages
@@ -26,23 +34,32 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./gradlew
       - name: Build
         run: ./gradlew bootJar -x test --refresh-dependencies --scan
-      - name: Config AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Build and Push
+        uses: docker/build-push-action@v5
         with:
-          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
-          aws-region: "us-west-2"
-      - name: Upload to S3
-        run: aws s3 cp ./build/libs/example-boot.jar s3://eb-s3-deploy/
-      - name: Create ElasticBeanstalk Version
-        run: |
-          aws elasticbeanstalk create-application-version \
-          --application-name demo-backend \
-          --source-bundle S3Bucket="eb-s3-deploy",S3Key="example-boot.jar" \
-          --version-label "ver-${{ github.sha }}"
-      - name: Deploy New Version
-        run: |
-          aws elasticbeanstalk update-environment --environment-name demo-backend-env --version-label "ver-${{ github.sha }}"
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          push: true
+          tags: '${{ secrets.REGISTRY }}/demo/backend:latest'
+          cache-from: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:buildcache'
+          cache-to: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:buildcache,mode=max'
+#      - name: Config AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+#          aws-region: "us-west-2"
+#      - name: Upload to S3
+#        run: aws s3 cp ./build/libs/example-boot.jar s3://eb-s3-deploy/
+#      - name: Create ElasticBeanstalk Version
+#        run: |
+#          aws elasticbeanstalk create-application-version \
+#          --application-name demo-backend \
+#          --source-bundle S3Bucket="eb-s3-deploy",S3Key="example-boot.jar" \
+#          --version-label "ver-${{ github.sha }}"
+#      - name: Deploy New Version
+#        run: |
+#          aws elasticbeanstalk update-environment --environment-name demo-backend-env --version-label "ver-${{ github.sha }}"

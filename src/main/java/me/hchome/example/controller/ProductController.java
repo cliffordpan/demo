@@ -13,39 +13,54 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * Product Controller
+ *
  * @author Cliff Pan
- * @since
  */
 @RestController
 @RequestMapping("/api/products")
 @Valid
 public class ProductController {
 
+	/**
+	 * Product service.
+	 */
 	private final ProductService service;
 
-	public ProductController(ProductService service) {
-		this.service = service;
+	/**
+	 * Default constuctor.
+	 *
+	 * @param productServiceDi product service DI
+	 */
+	public ProductController(final ProductService productServiceDi) {
+		this.service = productServiceDi;
 	}
 
+
 	@GetMapping
-	public Page<ProductBasic> list(@RequestParam(defaultValue = "", name = "search") String search, @PageableDefault Pageable pageable) {
+	public Page<ProductBasic> list(
+			@RequestParam(defaultValue = "", name = "search") final String search,
+			@PageableDefault final Pageable pageable) {
 		return service.listProducts(search, pageable);
 	}
 
 	@GetMapping("/{id:\\d+}")
-	public Product get(@PathVariable(name = "id") long id) {
+	public Product get(
+			@PathVariable(name = "id") final long id) {
 		return service.getProduct(id);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public Product saveProduct(@RequestBody @Validated Product product) {
+	public Product saveProduct(@RequestBody @Validated final Product product) {
 		return service.createProduct(product);
 	}
 
 	@PutMapping("/{id:\\d+}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Product updateProduct(@PathVariable(name = "id") long id, @RequestBody @Validated Product product) {
+	public Product updateProduct(
+			@PathVariable(name = "id") final long id,
+			@RequestBody @Validated final Product product) {
 		return service.updateProduct(id, product);
 	}
 

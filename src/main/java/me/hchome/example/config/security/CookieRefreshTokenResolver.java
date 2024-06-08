@@ -7,36 +7,48 @@ import org.springframework.security.oauth2.server.resource.web.DefaultBearerToke
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * Extract refresh token from cookie, fallback to spring default {@link DefaultBearerTokenResolver} if cannot retrieve token
+ * Extract refresh token from cookie, fallback to spring default
+ * {@link DefaultBearerTokenResolver} if cannot retrieve token.
  * from cookie
  *
  * @author Cliff Pan
  */
-public class CookieRefreshTokenResolver implements BearerTokenResolver {
+class CookieRefreshTokenResolver implements BearerTokenResolver {
 
-	private final BearerTokenResolver delegateResolver = new DefaultBearerTokenResolver();
-	private final AntPathRequestMatcher matcher;
-	private final String cookieName;
+    /**
+     * Default bearer token resolver.
+     */
+    private final BearerTokenResolver delegateResolver
+            = new DefaultBearerTokenResolver();
+    /**
+     * Spring path matcher.
+     */
+    private final AntPathRequestMatcher matcher;
+    /**
+     * Refresh token cookie name.
+     */
+    private final String cookieName;
 
-	public CookieRefreshTokenResolver(String path, String cookieName) {
-		this.matcher = new AntPathRequestMatcher(path, "POST");
-		this.cookieName = cookieName;
-	}
+    CookieRefreshTokenResolver(final String path,
+                               final String cookieNameInput) {
+        this.matcher = new AntPathRequestMatcher(path, "POST");
+        this.cookieName = cookieNameInput;
+    }
 
-	@Override
-	public String resolve(HttpServletRequest request) {
-		if (matcher.matches(request) && request.getCookies() != null) {
-			String token = null;
-			for(Cookie cookie: request.getCookies()) {
-				if(cookie.getName().equalsIgnoreCase(cookieName)) {
-					token = cookie.getValue();
-					break;
-				}
-			}
-			if(token != null && !token.isBlank()) {
-				return token;
-			}
-		}
-		return delegateResolver.resolve(request);
-	}
+    @Override
+    public String resolve(final HttpServletRequest request) {
+        if (matcher.matches(request) && request.getCookies() != null) {
+            String token = null;
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equalsIgnoreCase(cookieName)) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+            if (token != null && !token.isBlank()) {
+                return token;
+            }
+        }
+        return delegateResolver.resolve(request);
+    }
 }
