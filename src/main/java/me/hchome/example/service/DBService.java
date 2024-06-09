@@ -9,7 +9,7 @@ package me.hchome.example.service;
 public interface DBService {
 
 	/**
-	 * Reset database, all will reset by script
+	 * Reset database, all will reset by script.
 	 */
 	void executeReset();
 }
