@@ -44,8 +44,9 @@ jobs:
           context: .
           push: true
           tags: '${{ secrets.REGISTRY }}/demo/backend:latest'
-          cache-from: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:buildcache'
-          cache-to: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:buildcache,mode=max'
+          # harbor bug??
+#          cache-from: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:cache'
+#          cache-to: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:cache,mode=max'
 #      - name: Config AWS Credentials
 #        uses: aws-actions/configure-aws-credentials@v4
 #        with:
