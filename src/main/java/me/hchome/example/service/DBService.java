@@ -1,11 +1,15 @@
 package me.hchome.example.service;
 
 /**
- * Service to reset database
+ * Service for database operations
  *
  * @author Cliff Pan
  * @since
  */
 public interface DBService {
+
+	/**
+	 * Reset database
+	 */
 	void executeReset();
 }
