@@ -10,6 +10,7 @@ public interface DBService {
 
 	/**
 	 * Reset database, all tables will reset by a sql script.
+	 *
 	 */
 	void executeReset();
 }
