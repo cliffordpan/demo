@@ -1,0 +1,55 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo-demo-svc-ext
+spec:
+  type: ExternalName
+  externalName: demo-app-svc.demo.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-demo-app-front-svc-ext
+spec:
+  type: ExternalName
+  externalName: demo-app-front-svc.demo.svc.cluster.local
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-app-ingress
+  namespace: default
+  annotations:
+#    nginx.ingress.kubernetes.io/use-regex: "true"
+#    nginx.ingress.kubernetes.io/rewrite-target: /$
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - demo.hchome.me
+      secretName: wildcard-hchome-me
+  rules:
+    - host: demo.hchome.me
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-demo-svc-ext
+                port:
+                  number: 80
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-demo-svc-ext
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: demo-demo-app-front-svc-ext
+                port:
+                  number: 80
