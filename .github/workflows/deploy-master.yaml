@@ -62,7 +62,7 @@ jobs:
       - name: Trigger Jenkins
         shell: bash
         run: |
-          curl -I -u ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }} https://${{ secrets.JENKINS_URL }}/job/demo-fe/buildWithParameters?token=${{ secrets.DEPLOYMENT_TOKEN }}&APP_NAME=$APP_NAME&NS=$NS
+          curl -I -u ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }} "https://${{ secrets.JENKINS_URL }}/job/demo-fe/buildWithParameters?token=${{ secrets.DEPLOYMENT_TOKEN }}&APP_NAME=$APP_NAME&NS=$NS"
 #          cache-from: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:cache'
 #          cache-to: 'type=registry,ref=${{ secrets.REGISTRY }}/demo/backend:cache,mode=max'
 #      - name: Config AWS Credentials
